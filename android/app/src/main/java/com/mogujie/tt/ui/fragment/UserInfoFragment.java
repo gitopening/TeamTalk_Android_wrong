@@ -16,15 +16,13 @@ import com.mogujie.tt.DB.entity.UserEntity;
 import com.mogujie.tt.R;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.IntentConstant;
-import com.mogujie.tt.config.SysConstant;
-import com.mogujie.tt.ui.activity.ShowTransferFileActivity;
-import com.mogujie.tt.utils.IMUIHelper;
 import com.mogujie.tt.imservice.event.UserInfoEvent;
 import com.mogujie.tt.imservice.manager.IMLoginManager;
 import com.mogujie.tt.imservice.service.IMService;
-import com.mogujie.tt.ui.activity.DetailPortraitActivity;
 import com.mogujie.tt.imservice.support.IMServiceConnector;
+import com.mogujie.tt.ui.activity.DetailPortraitActivity;
 import com.mogujie.tt.ui.widget.IMBaseImageView;
+import com.mogujie.tt.utils.IMUIHelper;
 
 import java.util.ArrayList;
 
@@ -34,38 +32,38 @@ import java.util.ArrayList;
 public class UserInfoFragment extends MainFragment {
 
 	private View curView = null;
-    private IMService imService;
-    private UserEntity currentUser;
-    private int currentUserId;
-    private IMServiceConnector imServiceConnector = new IMServiceConnector(){
-        @Override
-        public void onIMServiceConnected() {
-            logger.d("detail#onIMServiceConnected");
+	private IMService imService;
+	private UserEntity currentUser;
+	private int currentUserId;
+	private IMServiceConnector imServiceConnector = new IMServiceConnector(){
+		@Override
+		public void onIMServiceConnected() {
+			logger.d("detail#onIMServiceConnected");
 
-            imService = imServiceConnector.getIMService();
-            if (imService == null) {
-                logger.e("detail#imService is null");
-                return;
-            }
+			imService = imServiceConnector.getIMService();
+			if (imService == null) {
+				logger.e("detail#imService is null");
+				return;
+			}
 
-            currentUserId = getActivity().getIntent().getIntExtra(IntentConstant.KEY_PEERID,0);
-            if(currentUserId == 0){
-                logger.e("detail#intent params error!!");
-                return;
-            }
-            currentUser = imService.getContactManager().findContact(currentUserId);
-            if(currentUser != null) {
-                initBaseProfile();
-                initDetailProfile();
-            }
-            ArrayList<Integer> userIds = new ArrayList<>(1);
-            //just single type
-            userIds.add(currentUserId);
-            imService.getContactManager().reqGetDetaillUsers(userIds);
-        }
-        @Override
-        public void onServiceDisconnected() {}
-    };
+			currentUserId = getActivity().getIntent().getIntExtra(IntentConstant.KEY_PEERID,0);
+			if(currentUserId == 0){
+				logger.e("detail#intent params error!!");
+				return;
+			}
+			currentUser = imService.getContactManager().findContact(currentUserId);
+			if(currentUser != null) {
+				initBaseProfile();
+				initDetailProfile();
+			}
+			ArrayList<Integer> userIds = new ArrayList<>(1);
+			//just single type
+			userIds.add(currentUserId);
+			imService.getContactManager().reqGetDetaillUsers(userIds);
+		}
+		@Override
+		public void onServiceDisconnected() {}
+	};
 
 	@Override
 	public void onDestroyView() {
@@ -75,7 +73,7 @@ public class UserInfoFragment extends MainFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 
 		imServiceConnector.connect(getActivity());
 		if (null != curView) {
@@ -120,39 +118,39 @@ public class UserInfoFragment extends MainFragment {
 	protected void initHandler() {
 	}
 
-    public void onEventMainThread(UserInfoEvent event){
-        switch (event){
-            case USER_INFO_UPDATE:
-                UserEntity entity  = imService.getContactManager().findContact(currentUserId);
-                if(entity !=null && currentUser.equals(entity)){
-                    initBaseProfile();
-                    initDetailProfile();
-                }
-                break;
-        }
-    }
+	public void onEventMainThread(UserInfoEvent event){
+		switch (event){
+			case USER_INFO_UPDATE:
+				UserEntity entity  = imService.getContactManager().findContact(currentUserId);
+				if(entity !=null && currentUser.equals(entity)){
+					initBaseProfile();
+					initDetailProfile();
+				}
+				break;
+		}
+	}
 
 
 	private void initBaseProfile() {
 		logger.d("detail#initBaseProfile");
-        IMBaseImageView portraitImageView = (IMBaseImageView) curView.findViewById(R.id.user_portrait);
+		IMBaseImageView portraitImageView = (IMBaseImageView) curView.findViewById(R.id.user_portrait);
 
 		setTextViewContent(R.id.nickName, currentUser.getMainName());
 		setTextViewContent(R.id.userName, currentUser.getRealName());
-        //头像设置
-        portraitImageView.setDefaultImageRes(R.drawable.tt_default_user_portrait_corner);
-        portraitImageView.setCorner(8);
-        portraitImageView.setImageResource(R.drawable.tt_default_user_portrait_corner);
-        portraitImageView.setImageUrl(currentUser.getAvatar());
+		//头像设置
+		portraitImageView.setDefaultImageRes(R.drawable.tt_default_user_portrait_corner);
+		portraitImageView.setCorner(8);
+		portraitImageView.setImageResource(R.drawable.tt_default_user_portrait_corner);
+		portraitImageView.setImageUrl(currentUser.getAvatar());
 
 		portraitImageView.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(getActivity(), DetailPortraitActivity.class);
 				intent.putExtra(IntentConstant.KEY_AVATAR_URL, currentUser.getAvatar());
 				intent.putExtra(IntentConstant.KEY_IS_IMAGE_CONTACT_AVATAR, true);
-				
+
 				startActivity(intent);
 			}
 		});
@@ -162,75 +160,76 @@ public class UserInfoFragment extends MainFragment {
 		if (currentUserId == imService.getLoginManager().getLoginId()) {
 			chatBtn.setVisibility(View.GONE);
 		}else{
-            chatBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View arg0) {
-                    IMUIHelper.openChatActivity(getActivity(),currentUser.getSessionKey());
-                    getActivity().finish();
-                }
-            });
+			chatBtn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					IMUIHelper.openChatActivity(getActivity(),currentUser.getSessionKey());
+					getActivity().finish();
+				}
+			});
 
-        }
+		}
 	}
 
 	private void initDetailProfile() {
 		logger.d("detail#initDetailProfile");
 		hideProgressBar();
-        DepartmentEntity deptEntity = imService.getContactManager().findDepartment(currentUser.getDepartmentId());
-		setTextViewContent(R.id.department,deptEntity.getDepartName());
+		DepartmentEntity deptEntity = imService.getContactManager().findDepartment(currentUser.getDepartmentId());
+		/**
+		 * 用来插入数据库 更新部门表和已经有的用户表
+		 *  INSERT INTO `teamtalk`.`IMDepart` SET `id`=2,`departName`='部门2',`priority`=0,`parentId`=1,`status`=0,`created`=1,`updated`=1;
+		 INSERT INTO `teamtalk`.`IMDepart` SET `id`=3,`departName`='部门3',`priority`=0,`parentId`=1,`status`=0,`created`=1,`updated`=1;
+		 SELECT * FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA`='teamtalk' AND `TABLE_NAME` IN ('IMUser');
+		 UPDATE `teamtalk`.`IMUser` SET `nick`='亲的真名1' WHERE `id`=4;
+		 */
+
+		if(null != deptEntity){
+			//如果拿到部门信息不为空，则进行设置。要不然会出异常。程序会闪退崩溃
+			setTextViewContent(R.id.department,deptEntity.getDepartName());
+		}
+
 		setTextViewContent(R.id.telno, currentUser.getPhone());
 		setTextViewContent(R.id.email, currentUser.getEmail());
 
 		View phoneView = curView.findViewById(R.id.phoneArea);
-        View emailView = curView.findViewById(R.id.emailArea);
+		View emailView = curView.findViewById(R.id.emailArea);
 		IMUIHelper.setViewTouchHightlighted(phoneView);
-        IMUIHelper.setViewTouchHightlighted(emailView);
+		IMUIHelper.setViewTouchHightlighted(emailView);
 
-
-
-        curView.findViewById(R.id.transfer_file_row).setOnClickListener(new View.OnClickListener() {
+		emailView.setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ShowTransferFileActivity.class);
-                intent.putExtra("uid",currentUserId);
-                startActivity(intent);
+				if (currentUserId == IMLoginManager.instance().getLoginId())
+					return;
+				IMUIHelper.showCustomDialog(getActivity(),View.GONE,String.format(getString(R.string.confirm_send_email),currentUser.getEmail()),new IMUIHelper.dialogCallback() {
+					@Override
+					public void callback() {
+						Intent data=new Intent(Intent.ACTION_SENDTO);
+						data.setData(Uri.parse("mailto:" + currentUser.getEmail()));
+						data.putExtra(Intent.EXTRA_SUBJECT, "");
+						data.putExtra(Intent.EXTRA_TEXT, "");
+						startActivity(data);
+					}
+				});
 			}
 		});
-
-        emailView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if (currentUserId == IMLoginManager.instance().getLoginId())
-                    return;
-                IMUIHelper.showCustomDialog(getActivity(),View.GONE,String.format(getString(R.string.confirm_send_email),currentUser.getEmail()),new IMUIHelper.dialogCallback() {
-                    @Override
-                    public void callback() {
-                        Intent data=new Intent(Intent.ACTION_SENDTO);
-                        data.setData(Uri.parse("mailto:" + currentUser.getEmail()));
-                        data.putExtra(Intent.EXTRA_SUBJECT, "");
-                        data.putExtra(Intent.EXTRA_TEXT, "");
-                        startActivity(data);
-                    }
-                });
-            }
-        });
 
 		phoneView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (currentUserId == IMLoginManager.instance().getLoginId())
 					return;
-                IMUIHelper.showCustomDialog(getActivity(),View.GONE,String.format(getString(R.string.confirm_dial),currentUser.getPhone()),new IMUIHelper.dialogCallback() {
-                    @Override
-                    public void callback() {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                IMUIHelper.callPhone(getActivity(), currentUser.getPhone());
-                            }
-                        },0);
-                    }
-                });
+				IMUIHelper.showCustomDialog(getActivity(),View.GONE,String.format(getString(R.string.confirm_dial),currentUser.getPhone()),new IMUIHelper.dialogCallback() {
+					@Override
+					public void callback() {
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								IMUIHelper.callPhone(getActivity(), currentUser.getPhone());
+							}
+						},0);
+					}
+				});
 			}
 		});
 

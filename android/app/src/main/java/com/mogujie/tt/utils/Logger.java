@@ -12,7 +12,8 @@ public class Logger {
 	 * log tag
 	 */
 	private String tagName = "MoGuLogger";// tag name
-	private static int logLevel = Log.ERROR;
+	private static int logLevel = Log.VERBOSE;
+//	private static int logLevel = Log.ERROR;
 	//private static int logLevel = Log.DEBUG;
 
 	private static Logger inst;
@@ -48,8 +49,8 @@ public class Logger {
 			if (st.getClassName().equals(this.getClass().getName())) {
 				continue;
 			}
-
-			return "[" + st.getFileName() + ":" + st.getLineNumber() + "]";
+			//添加上调用时的方法名
+			return "[" + st.getFileName() + ":" + st.getLineNumber()+ ":" + st.getMethodName() + "]";
 		}
 
 		return null;
@@ -60,8 +61,8 @@ public class Logger {
 		long threadId = Thread.currentThread().getId();
 		String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
 		String message = (functionName == null ? msg : (functionName + " - "
-				+ String.valueOf(threadId) + " - " + msg));
-        String finalRes = currentTime + " - " + message;
+			+ String.valueOf(threadId) + " - " + msg));
+		String finalRes = currentTime + " - " + message;
 		return finalRes;
 	}
 
@@ -153,7 +154,7 @@ public class Logger {
 					for (StackTraceElement st : sts) {
 						if (st != null) {
 							sb.append("[ " + st.getFileName() + ":"
-									+ st.getLineNumber() + " ]\r\n");
+								+ st.getLineNumber() + " ]\r\n");
 						}
 					}
 				}
