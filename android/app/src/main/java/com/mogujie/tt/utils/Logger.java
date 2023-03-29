@@ -75,6 +75,8 @@ public class Logger {
 			try {
 				String message = createMessage(getInputString(format, args));
 				Log.i(tagName, message);
+				MLoggerFile.i(tagName+message);
+
 			} finally {
 				lock.unlock();
 			}
@@ -90,6 +92,8 @@ public class Logger {
 			try {
 				String message = createMessage(getInputString(format, args));
 				Log.v(tagName, message);
+				MLoggerFile.i(tagName+message);
+
 			} finally {
 				lock.unlock();
 			}
@@ -105,6 +109,8 @@ public class Logger {
 			try {
 				String message = createMessage(getInputString(format, args));
 				Log.d(tagName, message);
+				MLoggerFile.i(tagName+message);
+
 			} finally {
 				lock.unlock();
 			}
@@ -120,6 +126,8 @@ public class Logger {
 			try {
 				String message = createMessage(getInputString(format, args));
 				Log.e(tagName, message);
+				MLoggerFile.i(tagName+message);
+
 			} finally {
 				lock.unlock();
 			}
@@ -159,6 +167,8 @@ public class Logger {
 					}
 				}
 				Log.e(tagName, sb.toString());
+				MLoggerFile.i(tagName+sb.toString());
+
 			} finally {
 				lock.unlock();
 			}
@@ -173,6 +183,8 @@ public class Logger {
 			try {
 				String message = createMessage(getInputString(format, args));
 				Log.w(tagName, message);
+				MLoggerFile.i(tagName+message);
+
 			} finally {
 				lock.unlock();
 			}
